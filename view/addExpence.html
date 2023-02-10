@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Expences</title>
+    <link href="../public/login.css" rel="stylesheet">
+</head>
+<body>
+    <main> 
+      <h2>Add your item</h2>
+      <ul id="leaderboard"></ul>
+         <form class="product-form"  method="POST" onsubmit="AddItem(event)">
+            <div class="form-control">
+              <label for="description">Description</label>
+              <input id="description" type="text" name="description" required/>
+             </div>
+
+              <div class="form-control">
+                <label for="choose">Add item</label>
+                <select class="product" name="choose" id="name">
+                  <option value="food">Food</option>
+                    <option value="salary">Salary</option>
+                    <option value="fuel">Fuel</option>
+                    <option value="traveling">Traveling</option>
+                </select>
+               </div>
+
+              <div class="form-control">
+                 <label for="amount">Income</label>
+                 <input id="amount" type="text" name="amount">
+              </div>
+
+              <div class="form-control">
+                <label for="expense">Expense</label>
+                <input id="expense" type="text" name="expense">
+              </div>
+               <button class="btn" type="submit">Add Now</button> 
+         </form>
+         <div id="download"></div>
+         <button id="rzp-button1" class="btn">Buy Premium</button>
+         <button onclick="download()" id="downloadexpense">Download File</button> 
+        <div id="message"></div>
+        <table id="list">
+          <tr>
+            <th>Description </th>
+            <th>AddItem </th>
+            <th>Income </th>
+            <th>Expenditure</th>
+          </tr>
+        </table>
+        <div id="add"></div>
+         <div  id="sub"></div>
+         <div id="pagination"></div>
+         <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.1/axios.min.js"></script>
+         <script src="addExpense.js"></script>
+  </body>
+  </html>
