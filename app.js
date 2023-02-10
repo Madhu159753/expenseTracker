@@ -34,7 +34,6 @@ app.use((req,res)=>{
     //console.log('some',req.url)
     res.sendFile(path.join(__dirname,`view/${req.url}`));
 })
-
 logindata.hasMany(ForgotPassword);
 ForgotPassword.belongsTo(logindata);
 
