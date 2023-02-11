@@ -1,3 +1,4 @@
+
 async function ForgotPassword(event){
     event.preventDefault();
     const emailObj={
@@ -5,7 +6,7 @@ async function ForgotPassword(event){
     };
    // console.log(emailObj)
     try{
-     const response=await axios.post(`http://54.144.45.46:4000/forgotPassword`,emailObj)
+     const response=await axios.post(`http://localhost:4000/forgotPassword`,emailObj)
     if(response.status===201){
     document.body.innerHTML += '<div style="color:red;">Mail Successfuly sent <div>'
 }

@@ -1,5 +1,5 @@
 const path=require('path');
-
+const dotenv=require('dotenv');
 const express=require('express');
 const bodyParser=require('body-parser');
 const helmet=require('helmet');
@@ -7,8 +7,10 @@ const fs=require('fs')
 const morgan=require('morgan');
 const cors=require('cors');
 const app=express();
+dotenv.config();
 app.use(bodyParser.json());
 app.use(express.json());
+app.use(express.static('view'));
 const router=require('./route/router');
 const premium=require('./route/purchase');
 const forgotPassword=require('./route/forgetpassword');
@@ -21,7 +23,7 @@ const order = require('./model/order');
 const ForgotPassword=require('./model/ForgotPasswordRequests');
 const accessFile=fs.createWriteStream(path.join(__dirname,'access.log'),{flags:'a'});
 app.use(express.static(path.join(__dirname,'public')));
-app.use(cors());
+//app.use(cors());
 app.use(helmet());
 app.use(morgan('combined',{stream:accessFile}));
 app.use(router);
@@ -31,8 +33,8 @@ app.use(forgotPassword);
 app.use(download);
 
 app.use((req,res)=>{
-    //console.log('some',req.url)
-    res.sendFile(path.join(__dirname,`view/${req.url}`));
+    console.log('some',req.url)
+    res.sendFile(path.join(__dirname,`view/${req.originalUrl}`));
 })
 logindata.hasMany(ForgotPassword);
 ForgotPassword.belongsTo(logindata);
