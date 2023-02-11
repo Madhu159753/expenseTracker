@@ -6,7 +6,7 @@ async function ForgotPassword(event){
     };
    // console.log(emailObj)
     try{
-     const response=await axios.post(`http://localhost:4000/forgotPassword`,emailObj)
+     const response=await axios.post(`http://54.144.45.46:4000/forgotPassword`,emailObj)
     if(response.status===201){
     document.body.innerHTML += '<div style="color:red;">Mail Successfuly sent <div>'
 }
@@ -21,7 +21,7 @@ else{
 
 //            async function resetpassward(id){
 //             try{
-//             const response =await axios.get(`http://localhost:4000/resetpassword/${id}`)
+//             const response =await axios.get(`http://54.144.45.46:4000/resetpassword/${id}`)
 //                console.log(response.data)
 //             }
 //             catch(err){
@@ -30,7 +30,7 @@ else{
 //            }
 //            async function updatepassword(){
 //             try{
-//                 const response=await axios.post("http://localhost:4000/updatepassword")
+//                 const response=await axios.post("http://54.144.45.46:4000/updatepassword")
 //                 console.log(response.data);
 
 //             }catch(err){
