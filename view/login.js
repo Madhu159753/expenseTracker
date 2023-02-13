@@ -7,7 +7,7 @@ async function loginData(event){
     };
     //console.log(loginObj);
     try{
-      const response=await axios.post("http://localhost:4000/user-logins",loginObj)
+      const response=await axios.post("http://54.144.45.46:4000/user-logins",loginObj)
       alert(response.data.message);
       console.log(response.data);
       localStorage.setItem('token',response.data.token)

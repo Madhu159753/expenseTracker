@@ -7,7 +7,7 @@ async function signup(event){
       password:event.target.password.value
     };
     try{
-      const response=await axios.post("http://localhost:4000/user-signup",signupDetails)
+      const response=await axios.post("http://54.144.45.46:4000/user-signup",signupDetails)
       if(response.status===201)
       {
        window.location.href="login.html"

@@ -9,7 +9,7 @@ async function AddItem(event){
     };
     try{
       const token=localStorage.getItem('token');
-      const response=await axios.post("http://localhost:4000/get-expense",addItem,{headers: {"Authorization": token}})
+      const response=await axios.post("http://54.144.45.46:4000/get-expense",addItem,{headers: {"Authorization": token}})
       showDetailsOnScreen(response.data.Details) 
       showLeaderboard(); 
       //AddUserIncome();
@@ -62,7 +62,7 @@ async function AddItem(event){
      
      const objUrlparms=new URLSearchParams(window.location.search)
      const page=objUrlparms.get("page")||1;
-       const result1=await axios.get(`http://localhost:4000/get-data/?page=${page}`, { headers: {"Authorization": token}})
+       const result1=await axios.get(`http://54.144.45.46:4000/get-data/?page=${page}`, { headers: {"Authorization": token}})
       //  console.log(result1.data.info)
       
            for(var i=0;i<result1.data.products.length;i++){
@@ -78,7 +78,7 @@ async function AddItem(event){
     async function deleteExpenses(userId){
        try{
          const token=localStorage.getItem('token');
-         const result2=await axios.delete(`http://localhost:4000/delete-user/${userId}`, {headers :{"Authorization":token}})
+         const result2=await axios.delete(`http://54.144.45.46:4000/delete-user/${userId}`, {headers :{"Authorization":token}})
          location.reload();
          removeUserFromScreen(userId);
           
@@ -99,13 +99,13 @@ async function AddItem(event){
 
  document.getElementById('rzp-button1').onclick=async function(e){
  const token=localStorage.getItem('token');
- const response=await axios.get('http://localhost:4000/premiummembership',{headers: {"Authorization":token}})
+ const response=await axios.get('http://54.144.45.46:4000/premiummembership',{headers: {"Authorization":token}})
     var options={
        "key":response.data.key_id, //enter the keyid generated from the dash board
        "order_id":response.data.order.id, //for one time payment
           //handler function will handle the success payment
         "handler":async function(response){
-           const res= await axios.post('http://localhost:4000/updatetransactionstatus',{
+           const res= await axios.post('http://54.144.45.46:4000/updatetransactionstatus',{
             order_id:options.order_id,
             payment_id:response.razorpay_payment_id,
             },{headers: {"Authorization": token}})
@@ -121,7 +121,7 @@ async function AddItem(event){
      rzp1.open();
      e.preventDefault();
       rzp1.on('payment.failed',async function(response){
-        const res= await axios.post('http://localhost:4000/failTransaction',{
+        const res= await axios.post('http://54.144.45.46:4000/failTransaction',{
             order_id:options.order_id,
             },{headers: {"Authorization": token}})
         //console.log(response);
@@ -136,7 +136,7 @@ async function AddItem(event){
        inputElement.onclick= async()=>{
       
         const token=localStorage.getItem('token');
-        var userLeaderboardArray=await axios.get('http://localhost:4000/showLeaderboard',{headers :{"Authorization":token}})
+        var userLeaderboardArray=await axios.get('http://54.144.45.46:4000/showLeaderboard',{headers :{"Authorization":token}})
        //console.log(userLeaderboardArray);
         var LeaderboardEle=document.getElementById('leaderboard')
         LeaderboardEle.innerHTML+='<h1>Leader board</h1>'
@@ -155,7 +155,7 @@ function AddUserIncome(){
        inputElement.onclick= async()=>{
       
         const token=localStorage.getItem('token');
-        var userLeaderboardArray=await axios.get('http://localhost:4000/AddItem',{headers :{"Authorization":token}})
+        var userLeaderboardArray=await axios.get('http://54.144.45.46:4000/AddItem',{headers :{"Authorization":token}})
       // console.log(userLeaderboardArray);
         
         var LeaderboardEle=document.getElementById('add')
@@ -173,7 +173,7 @@ function AddUserIncome(){
        inputElement.onclick= async()=>{
       
         const token=localStorage.getItem('token');
-        var userLeaderboardArray=await axios.get("http://localhost:4000/AddExpenditure",{headers :{"Authorization":token}})
+        var userLeaderboardArray=await axios.get("http://54.144.45.46:4000/AddExpenditure",{headers :{"Authorization":token}})
        //console.log(userLeaderboardArray);
         
         var LeaderboardEle=document.getElementById('sub')
@@ -218,7 +218,7 @@ function AddUserIncome(){
       try{
        const token=localStorage.getItem('token')
        
-        const result1=await axios.get(`http://localhost:4000/get-data/?page=${page}`, { headers: {"Authorization": token}})
+        const result1=await axios.get(`http://54.144.45.46:4000/get-data/?page=${page}`, { headers: {"Authorization": token}})
           // console.log(result1.data)
              for(var i=0;i<result1.data.products.length;i++){
               showDetailsOnScreen(result1.data.products[i])
@@ -233,7 +233,7 @@ function AddUserIncome(){
         async function download(){
           try{
           const token=localStorage.getItem('token');
-          const response=await axios.get('http://localhost:4000/download', { headers: {"Authorization" : token} })
+          const response=await axios.get('http://54.144.45.46:4000/download', { headers: {"Authorization" : token} })
           if(response.status === 201){
             console.log(response.data.downloadUrlData);
             showUrlOnScreen(response.data.downloadUrlData)
@@ -258,7 +258,7 @@ let listno = 0;
   try{
 
         
-    let response = await axios.get('http://localhost:4000/getAllUrl', {headers:{'Authorization': token}})
+    let response = await axios.get('http://54.144.45.46:4000/getAllUrl', {headers:{'Authorization': token}})
 
     if(response.status === 200){
         //some code

@@ -27,9 +27,9 @@ exports.forgotpassword = async (req, res) => {
                 from: 'madhu01111998@gmail.com', // Change to your verified sender
                 subject: 'Sending with SendGrid is Fun',
                 text: 'and easy to do anywhere, even with Node.js',
-                 html:`<a href="http://localhost:4000/password/resetpassword/${id}">Reset password</a>`,
+                 html:`<a href="http://54.144.45.46:4000/password/resetpassword/${id}">Reset password</a>`,
             };
-        console.log( `href="http://localhost:4000/password/resetpassword/${id}"`)
+        console.log( `href="http://54.144.45.46:4000/password/resetpassword/${id}"`)
 
 
             sgMail
