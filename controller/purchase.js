@@ -1,10 +1,14 @@
-
-
+const jwt=require('jsonwebtoken');
 const Razorpay=require('razorpay');
-const postDatacontroller=require('../controller/postdata');
+//const postDataController=require('./postdata');
 const Order=require('../model/order');
 const dotenv=require('dotenv');
 dotenv.config()
+
+function generateAccessToken(id,ispremiumuser){
+    return jwt.sign({loginId:id,ispremiumuser},process.env.JAVASCRIPT_ACCESSKEY_TOKEN);
+} 
+
 exports.purchasePremium= (req,res)=>{
 try{
  var rzp= new Razorpay({
@@ -31,14 +35,16 @@ res.json({message:"some thing went wrong",erroe:err})
 };
 exports.updateTransactionStatus= async (req,res)=>{
     try{
+        const id=req.user.id;
         const{payment_id,order_id}=req.body;
         const order=await Order.findOne({where:{orderid:order_id}})
         const promise1= order.update({paymentid:payment_id,status:'SUCCESSFUL'})
          const promise2= req.user.update({ ispremiumuser:true})
 
          Promise.all([promise1, promise2]).then(()=>{
-            return res.status(202).json({success:true,message:'successful',token:postDatacontroller.generateAccessToken(loginId,true)});
+            return res.status(202).json({success:true,message:'successful', token:generateAccessToken(id,true)});
          }).catch((err)=>{
+            console.log(err)
             throw new Error(err)
          })        
      }

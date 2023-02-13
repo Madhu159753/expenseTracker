@@ -1,16 +1,14 @@
 const path=require('path');
-const dotenv=require('dotenv');
 const express=require('express');
 const bodyParser=require('body-parser');
-const helmet=require('helmet');
-const fs=require('fs')
-const morgan=require('morgan');
+
 const cors=require('cors');
 const app=express();
-dotenv.config();
+
 app.use(bodyParser.json());
 app.use(express.json());
-//app.use(express.static('view'));
+app.use(cors());
+
 const router=require('./route/router');
 const premium=require('./route/purchase');
 const forgotPassword=require('./route/forgetpassword');
@@ -20,16 +18,17 @@ const sequelize=require('./util/database');
 const logindata = require('./model/logindata');
 const Additem = require('./model/Additem');
 const order = require('./model/order');
+const downloadUrls=require('./model/downloadUrls');
 const ForgotPassword=require('./model/ForgotPasswordRequests');
-const accessFile=fs.createWriteStream(path.join(__dirname,'access.log'),{flags:'a'});
+//const { downloadAllUrl } = require('./controller/download');
+
 app.use(express.static(path.join(__dirname,'public')));
-app.use(cors());
-app.use(helmet());
-app.use(morgan('combined',{stream:accessFile}));
+
+
 app.use(router);
 app.use(premium);
 app.use(premiumFeature);
-app.use(forgotPassword);
+app.use('/password',forgotPassword);
 app.use(download);
 
 app.use((req,res)=>{
@@ -44,6 +43,10 @@ Additem.belongsTo(logindata);
 
 logindata.hasMany(order);
 order.belongsTo(logindata);
+
+logindata.hasMany(downloadUrls);
+downloadUrls.belongsTo(logindata)
+
 sequelize
 .sync()
 .then(result=>{

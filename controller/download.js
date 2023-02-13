@@ -48,7 +48,11 @@ exports.download=async(req,res)=>{
   const filename=`Expense${userid}/${new Date()}.txt`;
   const fileURL= await uploadToS3(stringifiedExpenses,filename);
   // console.log(fileURL);
-  res.status(201).json({fileURL,success:true})
+   const downloadUrlDara=await req.user.createDownloasurl({
+    fileURL:fileURL,
+     filename
+   })
+  res.status(201).json({fileURL,downloadUrlDara,success:true})
     }
     catch(err){
        // console.log(err);
@@ -56,14 +60,14 @@ exports.download=async(req,res)=>{
     }
 }
 
-// exports.downloadAllUrl = async(req,res,next) => {
-//     try {
-//         let urls = await req.user.getDownloadurls() ;
-//         if(!urls){
-//             res.status(404).json({ message:'no urls found with this user' , success: false});
-//         }
-//         res.status(200).json({ urls , success: true })
-//     } catch (error) {
-//         res.status(500).json({ err})
-//     }
-// }
+exports.downloadAllUrl = async(req,res,next) => {
+    try {
+        let urls = await req.user.getDownloadurls() ;
+        if(!urls){
+            res.status(404).json({ message:'no urls found with this user' , success: false});
+        }
+        res.status(200).json({ urls , success: true })
+    } catch (error) {
+        res.status(500).json({ err})
+    }
+}

@@ -9,7 +9,7 @@ async function AddItem(event){
     };
     try{
       const token=localStorage.getItem('token');
-      const response=await axios.post("http://54.144.45.46:4000/get-expense",addItem,{headers: {"Authorization": token}})
+      const response=await axios.post("http://localhost:4000/get-expense",addItem,{headers: {"Authorization": token}})
       showDetailsOnScreen(response.data.Details) 
       showLeaderboard(); 
       //AddUserIncome();
@@ -55,17 +55,21 @@ async function AddItem(event){
         showLeaderboard();
         AddUserIncome();
         AddUserExpenditure();
+        downloadLink();
          }
      // console.log('123',token);
+     
+     
      const objUrlparms=new URLSearchParams(window.location.search)
      const page=objUrlparms.get("page")||1;
-       const result1=await axios.get(`http://54.144.45.46:4000/get-data/?page=${page}`, { headers: {"Authorization": token}})
-        // console.log(result1.data)
+       const result1=await axios.get(`http://localhost:4000/get-data/?page=${page}`, { headers: {"Authorization": token}})
+      //  console.log(result1.data.info)
+      
            for(var i=0;i<result1.data.products.length;i++){
             showDetailsOnScreen(result1.data.products[i])
-            showPagination(result1.data);
+           showPagination(result1.data);
            }
-     
+           
            }catch(err){
                console.log(err)
            }
@@ -74,7 +78,7 @@ async function AddItem(event){
     async function deleteExpenses(userId){
        try{
          const token=localStorage.getItem('token');
-         const result2=await axios.delete(`http://54.144.45.46:4000/delete-user/${userId}`, {headers :{"Authorization":token}})
+         const result2=await axios.delete(`http://localhost:4000/delete-user/${userId}`, {headers :{"Authorization":token}})
          location.reload();
          removeUserFromScreen(userId);
           
@@ -95,21 +99,21 @@ async function AddItem(event){
 
  document.getElementById('rzp-button1').onclick=async function(e){
  const token=localStorage.getItem('token');
- const response=await axios.get('http://54.144.45.46:4000/premiummembership',{headers: {"Authorization":token}})
+ const response=await axios.get('http://localhost:4000/premiummembership',{headers: {"Authorization":token}})
     var options={
        "key":response.data.key_id, //enter the keyid generated from the dash board
        "order_id":response.data.order.id, //for one time payment
           //handler function will handle the success payment
         "handler":async function(response){
-           const res= await axios.post('http://54.144.45.46:4000/updatetransactionstatus',{
+           const res= await axios.post('http://localhost:4000/updatetransactionstatus',{
             order_id:options.order_id,
             payment_id:response.razorpay_payment_id,
             },{headers: {"Authorization": token}})
-            alert('you are a premium user now');
-            showPremiumUserMessage();
-           
+            alert('you are a premium user now');  
           localStorage.setItem('token',res.data.token);
+          showPremiumUserMessage();
           showLeaderboard();
+            
           },
       };
      
@@ -117,7 +121,7 @@ async function AddItem(event){
      rzp1.open();
      e.preventDefault();
       rzp1.on('payment.failed',async function(response){
-        const res= await axios.post('http://54.144.45.46:4000/failTransaction',{
+        const res= await axios.post('http://localhost:4000/failTransaction',{
             order_id:options.order_id,
             },{headers: {"Authorization": token}})
         //console.log(response);
@@ -132,7 +136,7 @@ async function AddItem(event){
        inputElement.onclick= async()=>{
       
         const token=localStorage.getItem('token');
-        var userLeaderboardArray=await axios.get('http://54.144.45.46:4000/showLeaderboard',{headers :{"Authorization":token}})
+        var userLeaderboardArray=await axios.get('http://localhost:4000/showLeaderboard',{headers :{"Authorization":token}})
        //console.log(userLeaderboardArray);
         var LeaderboardEle=document.getElementById('leaderboard')
         LeaderboardEle.innerHTML+='<h1>Leader board</h1>'
@@ -144,26 +148,6 @@ async function AddItem(event){
      document.getElementById("message").appendChild(inputElement);
 }
 
-
-
-
- async function download(){
-    try{
-    const token=localStorage.getItem('token');
-    const response=await axios.get('http://54.144.45.46:4000/download', { headers: {"Authorization" : token} })
-    if(response.status === 201){
-    //the bcakend is essentially sending a download link
-    //  which if we open in browser, the file would download
-    var a = document.createElement("a");
-    a.href = response.data.fileURL;
-    a.download = 'myexpense.csv';
-    a.click();
- }
- }catch(err){
-   console.log(err);
-}
-}
-
 function AddUserIncome(){
       const inputElement=document.createElement('input');
        inputElement.type="button"
@@ -171,7 +155,7 @@ function AddUserIncome(){
        inputElement.onclick= async()=>{
       
         const token=localStorage.getItem('token');
-        var userLeaderboardArray=await axios.get('http://54.144.45.46:4000/AddItem',{headers :{"Authorization":token}})
+        var userLeaderboardArray=await axios.get('http://localhost:4000/AddItem',{headers :{"Authorization":token}})
       // console.log(userLeaderboardArray);
         
         var LeaderboardEle=document.getElementById('add')
@@ -189,7 +173,7 @@ function AddUserIncome(){
        inputElement.onclick= async()=>{
       
         const token=localStorage.getItem('token');
-        var userLeaderboardArray=await axios.get("http://54.144.45.46:4000/AddExpenditure",{headers :{"Authorization":token}})
+        var userLeaderboardArray=await axios.get("http://localhost:4000/AddExpenditure",{headers :{"Authorization":token}})
        //console.log(userLeaderboardArray);
         
         var LeaderboardEle=document.getElementById('sub')
@@ -200,46 +184,137 @@ function AddUserIncome(){
     }
      document.getElementById("sub").appendChild(inputElement);
   }
-  function showPagination({
-    currentPage,
-    hasNextPage,
-    nextPage,
-    hasPreviousPage,
-    previousPage,
-    lastPage
-  }){
-    const pagination=document.getElementById('pagination')
-    pagination.innerHTML='';
-    if(hasPreviousPage){
-      const btn2=document.createElement('button')
-      btn2.innerHTML=previousPage
-      btn2.addEventListener('click',()=>getProduct(previousPage))
-      pagination.appendChild(btn2)
+  
+ 
+    function showPagination({
+      currentPage,
+      hasNextPage,
+      nextPage,
+      hasPreviousPage,
+      previousPage,
+      lastPage
+    }){
+      const pagination=document.getElementById('pagination')
+      pagination.innerHTML='';
+      if(hasPreviousPage){
+        const btn2=document.createElement('button')
+        btn2.innerHTML=previousPage
+        btn2.addEventListener('click',()=>getProduct(previousPage))
+        pagination.appendChild(btn2)
+      }
+      const btn1=document.createElement('button')
+      btn1.innerHTML=`<h3>${currentPage}</h3>`
+      btn1.addEventListener('click',()=>getProduct(currentPage))
+      pagination.appendChild(btn1)
+  
+      if(hasNextPage){
+        const btn3=document.createElement('button')
+        btn3.innerHTML=nextPage
+        btn3.addEventListener('click',()=>getProduct(nextPage))
+        pagination.appendChild(btn3)
+      }
     }
-    const btn1=document.createElement('button')
-    btn1.innerHTML=`<h3>${currentPage}</h3>`
-    btn1.addEventListener('click',()=>getProduct(currentPage))
-    pagination.appendChild(btn1)
+    async function getProduct(page){
+      try{
+       const token=localStorage.getItem('token')
+       
+        const result1=await axios.get(`http://localhost:4000/get-data/?page=${page}`, { headers: {"Authorization": token}})
+          // console.log(result1.data)
+             for(var i=0;i<result1.data.products.length;i++){
+              showDetailsOnScreen(result1.data.products[i])
+              showPagination(result1.data);
+             }
+            }
+            catch(err){
+           console.log(err);
+            }
+          }
 
-    if(hasNextPage){
-      const btn3=document.createElement('button')
-      btn3.innerHTML=nextPage
-      btn3.addEventListener('click',()=>getProduct(nextPage))
-      pagination.appendChild(btn3)
-    }
-  }
-  async function getProduct(page){
-    try{
-     const token=localStorage.getItem('token')
-     
-      const result1=await axios.get(`http://54.144.45.46:4000/get-data/?page=${page}`, { headers: {"Authorization": token}})
-        // console.log(result1.data)
-           for(var i=0;i<result1.data.products.length;i++){
-            showDetailsOnScreen(result1.data.products[i])
-            showPagination(result1.data);
-           }
-          }
-          catch(err){
+        async function download(){
+          try{
+          const token=localStorage.getItem('token');
+          const response=await axios.get('http://localhost:4000/download', { headers: {"Authorization" : token} })
+          if(response.status === 201){
+            console.log(response.data.downloadUrlData);
+            showUrlOnScreen(response.data.downloadUrlData)
+          //the bcakend is essentially sending a download link
+          //  which if we open in browser, the file would download
+          var a = document.createElement("a");
+          a.href = response.data.fileURL;
+          a.download = 'myexpense.csv';
+          a.click();
+       }
+       }catch(err){
          console.log(err);
-          }
-        }
+      }
+      }  
+
+
+
+const listurl = document.getElementById('listurl-div');
+let listno = 0;
+ async function downloadLink(){
+  const token =localStorage.getItem('token');
+  try{
+
+        
+    let response = await axios.get('http://localhost:4000/getAllUrl', {headers:{'Authorization': token}})
+
+    if(response.status === 200){
+        //some code
+        //console.log(reponse);
+        console.log(response);
+        
+        showUrls(response.data);
+        //showUrlOnScreen();
+
+    }
+    console.log('into reportsssssssssss');
+}
+catch(error){
+    console.log(error);
+    
+   }
+ }
+
+ function showUrls(data){
+  listurl.innerHTML = ''
+
+  data.urls.forEach(url => {
+
+      let child = `<li class="list" >
+      <a href= "${url.fileURL}" class="expense-info"> ${listno + 1}. ${url.filename.split('/')[1]}</a>
+      </li>`
+
+      listurl.innerHTML += child
+
+      listno++
+      
+  });
+}
+
+function showUrlOnScreen(data){
+  // console.log(data);
+  // console.log(data.fileURL);
+   //console.log(data.fileURL)
+   let  child = `<li class="list" >
+       <a href="${data.fileURL}" class="expense-info">${listno + 1} ${data.filename.split('/')[1]}</a>
+   </li>`  
+
+listurl.innerHTML += child
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

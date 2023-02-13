@@ -53,7 +53,7 @@ exports.postLoginData=async(req,res,next)=>{
                  throw new Error('something went wrong')
              }
              if(result===true){
-             res.status(200).json({success:true,message:"user loged in successfuly",token:generateAccessToken(user[0].id,user[0].ispremiumuser)})
+             res.status(200).json({success:true,message:"user loged in successfuly", token:generateAccessToken(user[0].id,user[0].ispremiumuser)})
              }
          else{
           return res.status(400).json({success:false,message:"password is incorrect"})
