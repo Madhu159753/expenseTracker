@@ -6,16 +6,8 @@ const sequelize=require('../util/database');
 exports.getUserLeaderBoard=async (req,res)=>{
     try{
        const users=await logindata.findAll({
-         attributes:['id','name',[sequelize.fn('sum',sequelize.col('additems.amount')),'total_cost']],
- 
-         include:[
-            {
-            model:Additem,
-            attributes:[]
-         }
-        ],
-        group:['login.Id'],
-        order:[['total_cost','DESC']],
+      
+        order:[['totalExpense','DESC']],
       });
 
      

@@ -2,7 +2,8 @@ const bcrypt=require('bcrypt');
 const logindata=require('../model/logindata');
 const Additem=require('../model/Additem');
 const jwt=require('jsonwebtoken');
-const dotenv=require('dotenv')
+const dotenv=require('dotenv');
+const { NUMBER } = require('sequelize');
 dotenv.config()
 function isstringinvalid(string){
     if(string==undefined||string.length===0)
@@ -72,12 +73,12 @@ exports.postLoginData=async(req,res,next)=>{
  exports.addDataInExpense=async(req,res,next)=>{
     
     try
-        {
-           
-        const {description,choose,amount,expense}=req.body;
-    
-        const data= await Additem.create({description,choose,amount,expense,loginId:req.user.id});
-        res.status(201).json({Details:data});
+        {    
+      const {description,choose,amount,expense}=req.body;
+      const data= await Additem.create({description,choose,amount,expense,loginId:req.user.id});
+      const totalexpense=Number(req.user.totalExpense)+Number(amount);
+     await logindata.update({totalExpense:totalexpense},{where:{id:req.user.id}})
+     res.status(201).json({Details:data});
       }
        catch(err){
        //console.log(err);
